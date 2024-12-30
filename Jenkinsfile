@@ -2,62 +2,75 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs'  // Ensure NodeJS is installed
-        git 'Default'    // Ensure Git is configured
+        nodejs 'nodejs' 
     }
 
     environment {
-        PATH = "${tool 'nodejs'}/bin:${env.PATH}"
+        NODEJS_HOME = 'C:\\Program Files\\nodejs'
+        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
     }
 
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                // Checkout code from Git repository
-                git url: 'https://github.com/Nandy2907/assessment_2.git', branch: 'main'
+                checkout scm // Checks out the source code from the repository
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                script {
-                    // Run npm install to install dependencies
-                    bat 'npm install'
-                }
+                bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
+                npm install // Installs the dependencies listed in the package.json
+                '''
             }
         }
 
         stage('Lint') {
             steps {
-                script {
-                    // Run linting checks
-                    bat 'npm run lint'
-                }
+                bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
+                npm run lint // Runs linting on the backend code
+                '''
             }
         }
 
-        stage('Fix Lint Issues') {
+        stage('Build') {
             steps {
-                script {
-                    // Fix linting issues automatically
-                    bat 'npm run lint --fix'
-                }
+                bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
+                npm run build // Builds the backend application 
+                '''
             }
         }
 
-        stage('Build and Test') {
+        stage('SonarQube Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
+            }
             steps {
-                script {
-                    // Add build and test steps here
-                }
+                bat '''
+                set PATH=%SONAR_SCANNER_PATH%;%PATH%
+                where sonar-scanner || echo "SonarQube scanner not found. Please install it."
+                sonar-scanner ^
+                              -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
+                              -Dsonar.sources=. ^
+                              -Dsonar.host.url=http://localhost:9000 ^
+                              -Dsonar.token=${SONAR_TOKEN}  // Using the stored SonarQube token from Jenkins credentials
+                '''
             }
         }
     }
 
     post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
         always {
-            // Perform actions that should run after pipeline completion
-            echo 'Pipeline finished.'
+            echo 'This runs regardless of the result.'
         }
     }
 }
