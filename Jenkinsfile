@@ -1,12 +1,12 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs'
+        nodejs 'nodejs' // Define your nodejs tool
     }
 
     environment {
-        NODEJS_HOME = 'C:\\Program Files\\nodejs'
-        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
+        NODEJS_HOME = 'C:\\Program Files\\nodejs' // Set the Node.js installation path
+        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin' // Set SonarQube scanner path
     }
 
     stages {
@@ -21,12 +21,7 @@ pipeline {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
                 echo "Current directory: %cd%"
-                if exist backend (
-                    cd backend && npm install
-                ) else (
-                    echo "backend directory not found"
-                    exit 1
-                )
+                npm install
                 '''
             }
         }
@@ -36,12 +31,7 @@ pipeline {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
                 echo "Current directory: %cd%"
-                if exist backend (
-                    cd backend && npm run lint -- --debug
-                ) else (
-                    echo "backend directory not found"
-                    exit 1
-                )
+                npm run lint -- --debug
                 '''
             }
         }
@@ -51,12 +41,7 @@ pipeline {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
                 echo "Current directory: %cd%"
-                if exist backend (
-                    cd backend && npm run build
-                ) else (
-                    echo "backend directory not found"
-                    exit 1
-                )
+                npm run build
                 '''
             }
         }
@@ -70,9 +55,9 @@ pipeline {
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
                 sonar-scanner ^
-                              -Dsonar.projectKey=backend ^
-                              -Dsonar.sources=backend ^
-                              -Dsonar.host.url=http://localhost:9000 ^
+                              -Dsonar.projectKey=assessment_2 ^  // Replace with your actual project key
+                              -Dsonar.sources=. ^  // Analyze all files in the root of the repository
+                              -Dsonar.host.url=http://localhost:9000 ^  // Replace with your SonarQube instance URL
                               -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
