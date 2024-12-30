@@ -1,19 +1,17 @@
-const express=require('express');
-const mongoose=require('mongoose');
-const cors=require('cors');
-const bcrypt=require('bcrypt');
-const dotenv=require('dotenv');
-const UserModel=require('./model/userModel.js')
-
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const bcrypt = require('bcrypt');
+const dotenv = require('dotenv');
+const UserModel = require('./model/userModel.js');  // Ensure correct import
 
 dotenv.config();
-const app=express();
+const app = express();
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
-
 
 mongoose.connect(MONGO_URI)
     .then(() => {
@@ -24,21 +22,28 @@ mongoose.connect(MONGO_URI)
     })
     .catch((error) => {
         console.error("Database connection error:", error);
+        // Send a response with error status
+        process.exit(1);  // Optional: Exit process if DB connection fails
     });
-    app.post("/signup",async(req,res)=>{
-        try{
-            const {name,email,password}=req.body;
-            console.log(name+""+email+" "+password)
-            const existingUser=await userModel.findOne({email});
-            console.log(existingUser);
-            if(existingUser){
-                return res.status(400).json({error:"Email already exist"});
-            }
-            const hashedPassword=await bcrypt.hash(password,10);
-            const newUser=new UserModel({name,email,password:hashedPassword});
-            const savedUser=await newUser.save();
-            res.status(201).json(savedUser);
-        }catch(error){
-            res.status(500).json({error:error.message});
+
+app.post("/signup", async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        console.log(`${name} ${email} ${password}`);
+        
+        const existingUser = await UserModel.findOne({ email });  // Use UserModel here
+        console.log(existingUser);
+        
+        if (existingUser) {
+            return res.status(400).json({ error: "Email already exists" });
         }
-    });
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new UserModel({ name, email, password: hashedPassword });
+        const savedUser = await newUser.save();
+        
+        res.status(201).json(savedUser);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
