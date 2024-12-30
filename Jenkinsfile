@@ -6,7 +6,7 @@ pipeline {
 
     environment {
         NODEJS_HOME = 'C:\\Program Files\\nodejs'
-        SONAR_SCANNER_PATH = 'C:\\path\\to\\sonar-scanner\\bin'
+        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin
     }
 
     stages {
