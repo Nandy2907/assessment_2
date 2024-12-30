@@ -9,17 +9,24 @@
     "express": "^4.21.1",
     "mongoose": "^8.8.2"
   },
+  "devDependencies": {
+    "eslint": "^8.52.0"
+  },
   "scripts": {
     "start": "node index.js",
     "build": "echo 'Build script here'",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint . --debug"
   },
   "eslintConfig": {
     "extends": [
       "eslint:recommended"
     ]
   },
+  "eslintIgnore": [
+    "node_modules/",
+    "build/"
+  ],
   "browserslist": {
     "production": [
       ">0.2%",
