@@ -5,8 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "build": "echo 'Build script here'"
   },
   "keywords": [],
@@ -19,8 +17,5 @@
     "express": "^4.21.1",
     "mongoose": "^8.8.2"
   },
-  "devDependencies": {
-    "eslint": "^8.40.0",
-    "eslint-plugin-node": "^11.1.0"
-  }
+  "devDependencies": {}
 }
