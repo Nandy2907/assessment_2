@@ -18,45 +18,53 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
-                npm install // Installs the dependencies listed in the package.json
-                '''
+                dir("${WORKSPACE}") { // Navigate to the workspace directory
+                    bat '''
+                    set PATH=%NODEJS_HOME%;%PATH%
+                    npm install
+                    '''
+                }
             }
         }
 
         stage('Lint') {
             steps {
-                bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
-                npm run lint // Runs linting on the backend code
-                '''
+                dir("${WORKSPACE}") { // Navigate to the workspace directory
+                    bat '''
+                    set PATH=%NODEJS_HOME%;%PATH%
+                    npm run lint
+                    '''
+                }
             }
         }
 
         stage('Build') {
             steps {
-                bat '''
-                set PATH=%NODEJS_HOME%;%PATH%
-                npm run build // Builds the backend application 
-                '''
+                dir("${WORKSPACE}") { // Navigate to the workspace directory
+                    bat '''
+                    set PATH=%NODEJS_HOME%;%PATH%
+                    npm run build
+                    '''
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token') // Access SonarQube token securely
             }
             steps {
-                bat '''
-                set PATH=%SONAR_SCANNER_PATH%;%PATH%
-                where sonar-scanner || echo "SonarQube scanner not found. Please install it."
-                sonar-scanner ^
-                              -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
-                              -Dsonar.sources=. ^
-                              -Dsonar.host.url=http://localhost:9000 ^
-                              -Dsonar.token=sqp_0428bf7a2c05fa508f5e1ad81028379ae8b4f7fd
-                '''
+                dir("${WORKSPACE}") { // Navigate to the workspace directory
+                    bat '''
+                    set PATH=%SONAR_SCANNER_PATH%;%PATH%
+                    where sonar-scanner || echo "SonarQube scanner not found. Please install it."
+                    sonar-scanner ^
+                        -Dsonar.projectKey=backend ^
+                        -Dsonar.sources=. ^
+                        -Dsonar.host.url=http://localhost:9000 ^
+                        -Dsonar.token=%SONAR_TOKEN%
+                    '''
+                }
             }
         }
     }
