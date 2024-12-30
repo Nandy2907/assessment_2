@@ -47,18 +47,15 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
-            }
             steps {
                 bat '''
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
                 sonar-scanner ^
-                              -Dsonar.projectKey=assessment_2 ^  // Replace with your actual project key
-                              -Dsonar.sources=. ^  // Analyze all files in the root of the repository
-                              -Dsonar.host.url=http://localhost:9000 ^  // Replace with your SonarQube instance URL
-                              -Dsonar.token=%SONAR_TOKEN%
+                                  -Dsonar.projectKey=backend ^  // Use the project key provided
+                                  -Dsonar.sources=. ^  // Analyze all files in the root of the repository
+                                  -Dsonar.host.url=http://localhost:9000 ^  // Replace with your SonarQube instance URL
+                                  -Dsonar.token=sqp_5dbf2635e6715825a74aea59d0b6729dca5000c7  // Use the token you provided
                 '''
             }
         }
