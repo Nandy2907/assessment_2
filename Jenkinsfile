@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJSInstallation"  // Ensure NodeJS is installed on Jenkins
-        git "Git" // Ensure Git is installed on Jenkins
+        nodejs 'nodejs'  // Correct Node.js installation name
+        git 'Default'    // Correct Git installation name (usually "Default" for the default Git installation)
     }
 
     environment {
-        PATH = "${tool 'NodeJSInstallation'}/bin:${env.PATH}"
+        PATH = "${tool 'nodejs'}/bin:${env.PATH}"
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Installing npm dependencies
+                    // Install npm dependencies
                     bat 'npm install'
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
         stage('Lint') {
             steps {
                 script {
-                    // Running linting checks
+                    // Run linting checks
                     bat 'npm run lint'
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Fix Lint Issues') {
             steps {
                 script {
-                    // Automatically fix linting issues if possible
+                    // Automatically fix linting issues
                     bat 'npm run lint --fix'
                 }
             }
@@ -48,7 +48,7 @@ pipeline {
         stage('Build and Test') {
             steps {
                 script {
-                    // Your build and test steps here, e.g., running tests, building artifacts, etc.
+                    // Add your build and test steps here
                 }
             }
         }
@@ -56,7 +56,8 @@ pipeline {
 
     post {
         always {
-            // Steps to always run, like cleaning up or sending notifications
+            // You can add cleanup steps here or leave it empty
+            echo 'Pipeline finished.'
         }
     }
 }
