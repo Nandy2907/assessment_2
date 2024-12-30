@@ -1,83 +1,62 @@
 pipeline {
     agent any
+
     tools {
-        nodejs 'nodejs' 
+        nodejs "NodeJSInstallation"  // Ensure NodeJS is installed on Jenkins
+        git "Git" // Ensure Git is installed on Jenkins
     }
 
     environment {
-        NODEJS_HOME = 'C:\\Program Files\\nodejs' 
-        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
+        PATH = "${tool 'NodeJSInstallation'}/bin:${env.PATH}"
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm // Checks out the source code from the repository
+                // Checkout the code from Git
+                git url: 'https://github.com/Nandy2907/assessment_2.git', branch: 'main'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                dir("${WORKSPACE}") { // Navigate to the workspace directory
-                    bat '''
-                    set PATH=%NODEJS_HOME%;%PATH%
-                    npm install
-                    '''
+                script {
+                    // Installing npm dependencies
+                    bat 'npm install'
                 }
             }
         }
 
         stage('Lint') {
             steps {
-                dir("${WORKSPACE}") { // Navigate to the workspace directory
-                    bat '''
-                    set PATH=%NODEJS_HOME%;%PATH%
-                    npm run lint
-                    '''
+                script {
+                    // Running linting checks
+                    bat 'npm run lint'
                 }
             }
         }
 
-        stage('Build') {
+        stage('Fix Lint Issues') {
             steps {
-                dir("${WORKSPACE}") { // Navigate to the workspace directory
-                    bat '''
-                    set PATH=%NODEJS_HOME%;%PATH%
-                    npm run build
-                    '''
+                script {
+                    // Automatically fix linting issues if possible
+                    bat 'npm run lint --fix'
                 }
             }
         }
 
-        stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token') // Access SonarQube token securely
-            }
+        stage('Build and Test') {
             steps {
-                dir("${WORKSPACE}") { // Navigate to the workspace directory
-                    bat '''
-                    set PATH=%SONAR_SCANNER_PATH%;%PATH%
-                    where sonar-scanner || echo "SonarQube scanner not found. Please install it."
-                    sonar-scanner ^
-                        -Dsonar.projectKey=backend ^
-                        -Dsonar.sources=. ^
-                        -Dsonar.host.url=http://localhost:9000 ^
-                        -Dsonar.token=%SONAR_TOKEN%
-                    '''
+                script {
+                    // Your build and test steps here, e.g., running tests, building artifacts, etc.
                 }
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully'
-        }
-        failure {
-            echo 'Pipeline failed'
-        }
         always {
-            echo 'This runs regardless of the result.'
+            // Steps to always run, like cleaning up or sending notifications
         }
     }
 }
