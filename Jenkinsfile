@@ -30,7 +30,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                cd backend && npm run lint // Runs linting on the backend code
+                cd backend && npm run lint -- --debug // Runs linting on the backend code with debug logs
                 '''
             }
         }
@@ -52,10 +52,10 @@ pipeline {
                 bat '''
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
-                sonar-scanner ^
+                sonar-scanner ^ 
                               -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
                               -Dsonar.sources=backend ^ // Pointing to the 'backend' folder
-                              -Dsonar.host.url=http://localhost:9000 ^
+                              -Dsonar.host.url=http://localhost:9000 ^ 
                               -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
