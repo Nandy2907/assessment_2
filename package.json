@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix", // Added auto-fix script
+    "build": "echo 'Build script here'" // Add your actual build script if missing
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,7 @@
     "mongoose": "^8.8.2"
   },
   "devDependencies": {
-    "eslint": "^8.40.0"
+    "eslint": "^8.40.0",
+    "eslint-plugin-node": "^11.1.0" // Added plugin for Node.js
   }
 }
