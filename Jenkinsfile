@@ -1,8 +1,7 @@
 pipeline {
     agent any
-
     tools {
-        nodejs 'nodejs' 
+        nodejs 'nodejs'
     }
 
     environment {
@@ -21,7 +20,8 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                npm install // Installs the dependencies listed in the package.json
+                cd backend && rem Assuming your package.json is inside 'backend' folder
+                npm install
                 '''
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                npm run lint // Runs linting on the backend code
+                cd backend && npm run lint // Runs linting on the backend code
                 '''
             }
         }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                npm run build // Builds the backend application 
+                cd backend && npm run build // Builds the backend application
                 '''
             }
         }
@@ -54,9 +54,9 @@ pipeline {
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
                 sonar-scanner ^
                               -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
-                              -Dsonar.sources=. ^
+                              -Dsonar.sources=backend ^ // Pointing to the 'backend' folder
                               -Dsonar.host.url=http://localhost:9000 ^
-                              -Dsonar.token=${SONAR_TOKEN}  // Using the stored SonarQube token from Jenkins credentials
+                              -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
         }
