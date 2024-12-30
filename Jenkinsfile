@@ -1,18 +1,18 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs' // Define your nodejs tool
+        nodejs 'nodejs'  // Ensure this matches the Node.js installation name in Jenkins
     }
 
     environment {
-        NODEJS_HOME = 'C:\\Program Files\\nodejs' // Set the Node.js installation path
-        SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin' // Set SonarQube scanner path
+        NODEJS_HOME = 'C:\\Program Files\\nodejs'
+        SONAR_SCANNER_PATH = 'C:\\path\\to\\sonar-scanner\\bin'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Checks out the source code from the repository
+                checkout scm
             }
         }
 
@@ -20,8 +20,8 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                echo "Current directory: %cd%"
                 npm install
+                npm audit fix
                 '''
             }
         }
@@ -30,7 +30,6 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                echo "Current directory: %cd%"
                 npm run lint -- --debug
                 '''
             }
@@ -40,7 +39,6 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                echo "Current directory: %cd%"
                 npm run build
                 '''
             }
@@ -48,17 +46,16 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token')
             }
             steps {
                 bat '''
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
-                where sonar-scanner || echo "SonarQube scanner not found. Please install it."
                 sonar-scanner ^
-                              -Dsonar.projectKey=backend ^  // Replace with your actual project key
-                              -Dsonar.sources=. ^  // Analyze all files in the root of the repository
-                              -Dsonar.host.url=http://localhost:9000 ^  // Replace with your SonarQube instance URL
-                              -Dsonar.token=%SONAR_TOKEN%
+                    -Dsonar.projectKey=backend ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.host.url=http://localhost:9000 ^
+                    -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
         }
