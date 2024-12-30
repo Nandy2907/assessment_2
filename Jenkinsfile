@@ -26,6 +26,15 @@ pipeline {
             }
         }
 
+        stage('Install ESLint Globally') {
+            steps {
+                bat '''
+                set PATH=%NODEJS_HOME%;%PATH%
+                npm install -g eslint
+                '''
+            }
+        }
+
         stage('Lint') {
             steps {
                 bat '''
