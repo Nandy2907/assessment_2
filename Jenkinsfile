@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs'  // Correct Node.js installation name
-        git 'Default'    // Correct Git installation name (usually "Default" for the default Git installation)
+        nodejs 'nodejs'  // Ensure NodeJS is installed
+        git 'Default'    // Ensure Git is configured
     }
 
     environment {
@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
-                // Checkout the code from Git
+                // Checkout code from Git repository
                 git url: 'https://github.com/Nandy2907/assessment_2.git', branch: 'main'
             }
         }
@@ -21,7 +21,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install npm dependencies
+                    // Run npm install to install dependencies
                     bat 'npm install'
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Fix Lint Issues') {
             steps {
                 script {
-                    // Automatically fix linting issues
+                    // Fix linting issues automatically
                     bat 'npm run lint --fix'
                 }
             }
@@ -48,7 +48,7 @@ pipeline {
         stage('Build and Test') {
             steps {
                 script {
-                    // Add your build and test steps here
+                    // Add build and test steps here
                 }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
 
     post {
         always {
-            // You can add cleanup steps here or leave it empty
+            // Perform actions that should run after pipeline completion
             echo 'Pipeline finished.'
         }
     }
