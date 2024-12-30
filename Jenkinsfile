@@ -55,7 +55,7 @@ pipeline {
                               -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
                               -Dsonar.sources=. ^
                               -Dsonar.host.url=http://localhost:9000 ^
-                              -Dsonar.token=%SONAR_TOKEN%
+                              -Dsonar.token=sqp_0428bf7a2c05fa508f5e1ad81028379ae8b4f7fd
                 '''
             }
         }
