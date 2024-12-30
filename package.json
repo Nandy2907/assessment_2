@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix", 
-    "build": "echo 'Build script here'" 
+    "lint:fix": "eslint . --fix",
+    "build": "echo 'Build script here'"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "eslint": "^8.40.0",
-    "eslint-plugin-node": "^11.1.0" 
+    "eslint-plugin-node": "^11.1.0"
   }
 }
