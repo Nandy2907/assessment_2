@@ -20,8 +20,13 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                cd backend && rem Assuming your package.json is inside 'backend' folder
-                npm install
+                echo "Current directory: %cd%"
+                if exist backend (
+                    cd backend && npm install
+                ) else (
+                    echo "backend directory not found"
+                    exit 1
+                )
                 '''
             }
         }
@@ -30,7 +35,13 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                cd backend && npm run lint -- --debug // Runs linting on the backend code with debug logs
+                echo "Current directory: %cd%"
+                if exist backend (
+                    cd backend && npm run lint -- --debug
+                ) else (
+                    echo "backend directory not found"
+                    exit 1
+                )
                 '''
             }
         }
@@ -39,7 +50,13 @@ pipeline {
             steps {
                 bat '''
                 set PATH=%NODEJS_HOME%;%PATH%
-                cd backend && npm run build // Builds the backend application
+                echo "Current directory: %cd%"
+                if exist backend (
+                    cd backend && npm run build
+                ) else (
+                    echo "backend directory not found"
+                    exit 1
+                )
                 '''
             }
         }
@@ -52,10 +69,10 @@ pipeline {
                 bat '''
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
-                sonar-scanner ^ 
-                              -Dsonar.projectKey=backend ^ // Replace 'backend' with the actual project key
-                              -Dsonar.sources=backend ^ // Pointing to the 'backend' folder
-                              -Dsonar.host.url=http://localhost:9000 ^ 
+                sonar-scanner ^
+                              -Dsonar.projectKey=backend ^
+                              -Dsonar.sources=backend ^
+                              -Dsonar.host.url=http://localhost:9000 ^
                               -Dsonar.token=%SONAR_TOKEN%
                 '''
             }
