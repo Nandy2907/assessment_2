@@ -7,7 +7,7 @@ pipeline {
     environment {
         NODEJS_HOME = 'C:\\Program Files\\nodejs'
         SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
-        SONAR_HOST_URL = 'http://sonarqube:9000'
+        SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_PROJECT_KEY = 'mern'
     }
 
