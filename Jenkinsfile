@@ -5,14 +5,14 @@ pipeline {
     }
 
     environment {
-        NODEJS_HOME = 'C:\\Program Files\\nodejs' 
+        NODEJS_HOME = 'C:\\Program Files\\nodejs'
         SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Retrieves source code from the configured SCM
+                checkout scm
             }
         }
 
@@ -45,7 +45,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') 
+                SONAR_TOKEN = credentials('sonar-token')
             }
             steps {
                 bat '''
@@ -54,8 +54,8 @@ pipeline {
                 sonar-scanner ^
                               -Dsonar.projectKey=mern ^  
                               -Dsonar.sources=. ^  
-                              -Dsonar.host.url=http://localhost:9000 ^  
-                              -Dsonar.token=%SONAR_TOKEN% ^
+                              -Dsonar.host.url=http://sonarqube:9000 ^  
+                              -Dsonar.login=%SONAR_TOKEN% ^  
                               -Dsonar.verbose=true
                 '''
             }
