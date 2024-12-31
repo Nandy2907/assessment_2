@@ -1,12 +1,14 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs' 
+        nodejs 'nodejs'
     }
 
     environment {
         NODEJS_HOME = 'C:\\Program Files\\nodejs'
         SONAR_SCANNER_PATH = 'C:\\Users\\senth\\Downloads\\sonar-scanner-cli-6.2.1.4610-windows-x64\\sonar-scanner-6.2.1.4610-windows-x64\\bin'
+        SONAR_HOST_URL = 'http://sonarqube:9000'
+        SONAR_PROJECT_KEY = 'mern'
     }
 
     stages {
@@ -45,17 +47,17 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token')
+                SONAR_TOKEN = credentials('sonar-token')  // Securely retrieve SonarQube token
             }
             steps {
                 bat '''
                 set PATH=%SONAR_SCANNER_PATH%;%PATH%
                 where sonar-scanner || echo "SonarQube scanner not found. Please install it."
                 sonar-scanner ^
-                              -Dsonar.projectKey=mern ^  
-                              -Dsonar.sources=. ^  
-                              -Dsonar.host.url=http://sonarqube:9000 ^  
-                              -Dsonar.login=%SONAR_TOKEN% ^  
+                              -Dsonar.projectKey=%SONAR_PROJECT_KEY% ^
+                              -Dsonar.sources=. ^
+                              -Dsonar.host.url=%SONAR_HOST_URL% ^
+                              -Dsonar.login=%SONAR_TOKEN% ^
                               -Dsonar.verbose=true
                 '''
             }
